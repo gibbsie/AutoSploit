@@ -12,7 +12,7 @@ function startPostgreSQLLinux () {
 }
 
 function main () {
-  if [ $1 == "linux" ]; then
+  if [ "${1}" == "linux" ]; then
     startApacheLinux;
     startPostgreSQLLinux;
   else
@@ -20,4 +20,4 @@ function main () {
   fi
 }
 
-main $@;
+main "$@";

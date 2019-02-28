@@ -25,7 +25,7 @@ function installFedora () {
 function installOSX () {
   xcode-select --install;
   /usr/bin/ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)";
-  echo PATH=/usr/local/bin:/usr/local/sbin:$PATH >> ~/.bash_profile;
+  echo "PATH=/usr/local/bin:/usr/local/sbin:${PATH}" >> ~/.bash_profile;
   source ~/.bash_profile;
   brew tap homebrew/versions;
   brew install nmap;
@@ -43,12 +43,12 @@ function installOSX () {
 
 function installOsxMSF () {
   mkdir /usr/local/share;
-  cd /usr/local/share/;
+  cd /usr/local/share/ || exit;
   git clone https://github.com/rapid7/metasploit-framework.git;
-  cd metasploit-framework;
-  for MSF in $(ls msf*); do ln -s /usr/local/share/metasploit-framework/$MSF /usr/local/bin/$MSF;done;
+  cd metasploit-framework || exit;
+  for MSF in msf*; do [[ -e "${MSF}" ]] || break; ln -s /usr/local/share/metasploit-framework/"${MSF}" /usr/local/bin/"${MSF}"; done;
   sudo chmod go+w /etc/profile;
-  sudo echo export MSF_DATABASE_CONFIG=/usr/local/share/metasploit-framework/config/database.yml >> /etc/profile;
+  echo 'export MSF_DATABASE_CONFIG=/usr/local/share/metasploit-framework/config/database.yml' | sudo tee -a /etc/profile > /dev/null;
   bundle install;
   echo "[!!] A DEFAULT CONFIG OF THE FILE 'database.yml' WILL BE USED";
   rm /usr/local/share/metasploit-framework/config/database.yml;
@@ -68,7 +68,7 @@ _EOF
 }
 
 function installMSF () {
-    if [[ ! "$(which msfconsole)" = */* ]]; then
+    if [[ ! "$(command -v msfconsole)" = */* ]]; then
         curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && \
             chmod 755 msfinstall && \
             ./msfinstall;
@@ -76,7 +76,7 @@ function installMSF () {
     fi
 }
 
-function install () {
+function installer () {
     case "$(uname -a)" in
         *Debian*|*Ubuntu*)
             installDebian;
@@ -95,4 +95,4 @@ function install () {
     echo "Installation Complete";
 }
 
-install;
+installer;

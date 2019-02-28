@@ -15,5 +15,5 @@ sudo apt-get --yes install python python-pip python-virtualenv git
 sudo apt-get --yes install fish
 sudo chsh -s /usr/bin/fish ubuntu
 
-cd ~
+cd ~ || exit
 git clone https://github.com/NullArray/AutoSploit
